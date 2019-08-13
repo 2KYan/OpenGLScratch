@@ -38,6 +38,10 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\texture.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shader\simple_triangle.frag" />
+    <None Include="data\shader\simple_triangle.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{64936C3C-5934-47BA-B4FB-A306A63F1478}</ProjectGuid>

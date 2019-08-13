@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glm/glm.hpp>
+#include <glm/glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 

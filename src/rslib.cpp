@@ -1,6 +1,6 @@
 #include "rslib.h"
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #include <windows.h>
 #include <locale>
 #include <codecvt>
@@ -230,7 +230,7 @@ int RSLib::glsl2spv(const std::string& glslFileName, const std::string& outSpvFi
 int RSLib::execCmd(std::string& cmd) 
 {
     int rtnVal = 0;
-#if defined(WIN32)
+#if defined(_WIN32)
     PROCESS_INFORMATION p_info;
     STARTUPINFO s_info;
 
