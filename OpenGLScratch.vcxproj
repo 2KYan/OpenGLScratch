@@ -26,19 +26,26 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\render\basic_lighting.cpp" />
+    <ClCompile Include="src\render\simple_scene.cpp" />
     <ClCompile Include="src\rslib.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\rslib.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\texture.h" />
+    <ClInclude Include="src\render\basic_lighting.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shader\simple_color.frag" />
+    <None Include="data\shader\simple_light.frag" />
+    <None Include="data\shader\simple_transform.vert" />
     <None Include="data\shader\simple_triangle.frag" />
     <None Include="data\shader\simple_triangle.vert" />
   </ItemGroup>

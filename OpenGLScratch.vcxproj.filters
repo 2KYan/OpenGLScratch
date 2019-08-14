@@ -16,6 +16,9 @@
     <Filter Include="glad">
       <UniqueIdentifier>{a638036c-2e7e-48fd-a1c3-0ac3cb28d5b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{f72cb662-abe3-4903-b7de-f7ee72895b99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -35,6 +38,12 @@
     </ClCompile>
     <ClCompile Include="src\glad.c">
       <Filter>glad</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\basic_lighting.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\simple_scene.cpp">
+      <Filter>render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,12 +65,27 @@
     <ClInclude Include="include\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\basic_lighting.h">
+      <Filter>render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shader\simple_triangle.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="data\shader\simple_triangle.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\shader\simple_color.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\shader\simple_light.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\shader\simple_transform.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
