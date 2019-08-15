@@ -40,7 +40,7 @@
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\texture.h" />
-    <ClInclude Include="src\render\basic_lighting.h" />
+    <ClInclude Include="src\render\render_scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shader\simple_color.frag" />

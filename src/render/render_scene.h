@@ -2,5 +2,5 @@
 
 namespace basic_lighting
 {
-    void basic_lighting_main();
+    int basic_lighting_main();
 }

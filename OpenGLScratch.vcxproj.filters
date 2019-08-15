@@ -68,7 +68,7 @@
     <ClInclude Include="include\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\basic_lighting.h">
+    <ClInclude Include="src\render\render_scene.h">
       <Filter>render</Filter>
     </ClInclude>
   </ItemGroup>
