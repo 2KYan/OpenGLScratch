@@ -23,18 +23,23 @@ const float PITCH = 0.0f;
 const float SPEED = 2.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
+const float ASPECTRATIO = 1.0f;
+const float ARCBALL_SIZE = 100.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
 public:
+    // Camera Attributes for Reset
+    glm::vec3 _Position;
+    glm::vec3 _WorldUp;
     // Camera Attributes
     glm::vec3 Position;
+    glm::vec3 WorldUp;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
-    glm::vec3 WorldUp;
     // Euler Angles
     float Yaw;
     float Pitch;
@@ -42,30 +47,61 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
+    float AspectRatio;
+    float Size;
+
+    glm::mat4 Model;
+    glm::mat4 View;
+    glm::mat4 Projection;
 
     // Constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float aspectRatio = ASPECTRATIO, float yaw = YAW, float pitch = PITCH) 
+        : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Size(ARCBALL_SIZE)
     {
-        Position = position;
-        WorldUp = up;
+        _Position = Position = position;
+        _WorldUp = WorldUp = up;
+        Yaw = yaw;
+        Pitch = pitch;
+        AspectRatio = aspectRatio;
+        updateCameraVectors();
+    }
+    // Constructor with scalar values
+    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
+        : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Size(ARCBALL_SIZE)
+    {
+        _Position = Position = glm::vec3(posX, posY, posZ);
+        _WorldUp = WorldUp = glm::vec3(upX, upY, upZ);
         Yaw = yaw;
         Pitch = pitch;
         updateCameraVectors();
     }
-    // Constructor with scalar values
-    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+
+    void reset()
     {
-        Position = glm::vec3(posX, posY, posZ);
-        WorldUp = glm::vec3(upX, upY, upZ);
-        Yaw = yaw;
-        Pitch = pitch;
+        Position = _Position;
+        WorldUp = _WorldUp;
         updateCameraVectors();
+    }
+
+    void updateAspectRatio(float ar)
+    {
+        AspectRatio = ar;
+    }
+
+    glm::mat4 GetModelMatrix()
+    {
+        return Model;
     }
 
     // Returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        return glm::lookAt(Position, Position + Front, Up);
+        return View;
+    }
+
+    glm::mat4 GetProjectionMatrix()
+    {
+        return Projection;
     }
 
     // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -114,6 +150,32 @@ public:
             Zoom = 45.0f;
     }
 
+    void Rotate(int32_t x, int32_t y, int32_t xrel, int32_t yrel, int32_t width, int32_t height)
+    {
+        //x, y is the new position;
+        int32_t old_x = x - xrel;
+        int32_t old_y = y - yrel;
+
+        if (xrel == 0 && yrel == 0) return;
+
+        glm::vec2 old_pos = scale2snorm(old_x, old_y, width, height);
+        glm::vec2 new_pos = scale2snorm(x, y, width, height);
+        glm::vec3 p1 = project2Spehere(old_pos);
+        glm::vec3 p2 = project2Spehere(new_pos);
+
+        //std::cout << glm::to_string(p1)  << std::endl;
+        //std::cout << glm::to_string(p2)  << std::endl;
+
+        glm::vec3 r_axis = glm::cross(p1, p2);
+        glm::mat3 camera2object = glm::inverse(glm::mat3(View) * glm::mat3(Model));
+        glm::vec3 r_axis_in_object = camera2object * r_axis;
+        float r_angle = 180 * glm::length(p1 - p2);
+        float angle = acos(glm::min(1.0f, glm::dot(p1, p2)));
+        Model = glm::rotate(Model, r_angle, r_axis_in_object);
+
+        return;
+    }
+
 private:
     // Calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors()
@@ -128,5 +190,34 @@ private:
         Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
         Up = glm::normalize(glm::cross(Right, Front));
     }
+
+    void updateMatrix()
+    {
+        View = glm::lookAt(Position, Position + Front, Up);
+        Projection = glm::perspective(glm::radians(Zoom), AspectRatio, 0.1f, 100.0f);
+    }
+
+    glm::vec2 scale2snorm(int32_t x, int32_t y, int32_t w, int32_t h)
+    {
+        return glm::vec2(x * 2.0 / w - 1.0f, y * 2.0f / h - 1.0f);
+    }
+
+    glm::vec3 project2Spehere(glm::vec2 xy)
+    {
+        static const float sqrt2 = sqrt(2.0f);
+        glm::vec3 result;
+
+        float d = glm::length(xy);
+        if (d < Size * sqrt2 / 2.0f) {
+            result.z = sqrt(Size * Size - d * d);
+        } else {
+            result.z = Size * Size / (2 * d);
+        }
+        result.x = xy.x;
+        result.y = xy.y;
+
+        return glm::normalize(result);
+    }
+
 };
 #endif

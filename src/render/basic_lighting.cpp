@@ -27,7 +27,7 @@ namespace basic_lighting
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 800;
 
-Camera camera(glm::vec3(0.5f, 0.5f, 3.0f));
+Camera camera(glm::vec3(0.5f, 0.5f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), float(SCR_WIDTH)/SCR_HEIGHT);
 
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -53,23 +53,23 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
+        lastX = float(xpos);
+        lastY = float(ypos);
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    float xoffset = float(xpos) - lastX;
+    float yoffset = lastY - float(ypos); // reversed since y-coordinates go from bottom to top
 
-    lastX = xpos;
-    lastY = ypos;
+    lastX = float(xpos);
+    lastY = float(ypos);
 
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    camera.ProcessMouseScroll(float(yoffset));
 }
 
 void processInput(GLFWwindow *window)
@@ -225,7 +225,7 @@ int basic_lighting_main()
     while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
         // --------------------
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -245,15 +245,29 @@ int basic_lighting_main()
 
         // be sure to activate shader when setting uniforms/drawing objects
         lightingShader.use();
-        lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        lightingShader.setVec3("lightPos", lightPos);
+
+        glm::vec3 lightColor;
+        lightColor.x = sin(currentFrame * 2.0f);
+        lightColor.y = sin(currentFrame * 0.7f);
+        lightColor.z = sin(currentFrame * 1.3f);
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+        lightingShader.setVec3("light.ambient", ambientColor);
+        lightingShader.setVec3("light.diffuse", diffuseColor);
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setVec3("light.position", lightPos);
         lightingShader.setVec3("viewPos", camera.Position);
 
+        // material properties
+        lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+        lightingShader.setFloat("material.shininess", 32.0f);
+
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), ( float) SCR_WIDTH / ( float) SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = camera.GetProjectionMatrix();
         glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 model = camera.GetModelMatrix();
 
         lightingShader.setMat4("model", model);
         lightingShader.setMat4("view", view);
@@ -262,7 +276,6 @@ int basic_lighting_main()
         // render the cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
 
         lampShader.use();
         model = glm::mat4(1.0f);

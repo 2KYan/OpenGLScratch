@@ -50,23 +50,23 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
+        lastX = float(xpos);
+        lastY = float(ypos);
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    float xoffset = float(xpos) - lastX;
+    float yoffset = lastY - float(ypos); // reversed since y-coordinates go from bottom to top
 
-    lastX = xpos;
-    lastY = ypos;
+    lastX = float(xpos);
+    lastY = float(ypos);
 
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    camera.ProcessMouseScroll(float(yoffset));
 }
 
 void processInput(GLFWwindow *window)
@@ -185,7 +185,7 @@ extern int simple_scene_main()
     };
 
     while (!glfwWindowShouldClose(window)) {
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
