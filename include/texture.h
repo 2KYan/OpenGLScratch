@@ -2,10 +2,9 @@
 #define _TEXTURE_H
 
 class Texture {
-public: 
-    static int activeTextureId;
-    
-    static void reset() { activeTextureId = 0; }
+private: 
+    int activeTextureId = 0;
+    void reset() { activeTextureId = 0; }
 
 public:
     unsigned int ID;

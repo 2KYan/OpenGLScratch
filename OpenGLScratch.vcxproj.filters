@@ -79,13 +79,13 @@
     <None Include="data\shader\simple_triangle.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="data\shader\simple_color.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="data\shader\simple_light.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="data\shader\simple_transform.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\shader\constant_color.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
