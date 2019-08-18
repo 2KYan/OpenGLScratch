@@ -116,6 +116,8 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+
+        updateCameraVectors();
     }
 
     // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -148,6 +150,13 @@ public:
             Zoom = 1.0f;
         if (Zoom >= 45.0f)
             Zoom = 45.0f;
+
+        updateCameraVectors();
+    }
+        
+   void translate(int32_t xrel, int32_t yrel)
+    {
+       return;
     }
 
     void Rotate(int32_t x, int32_t y, int32_t xrel, int32_t yrel, int32_t width, int32_t height)
