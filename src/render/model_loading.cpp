@@ -23,7 +23,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-namespace basic_lighting
+namespace model_loading
 {
 
 const unsigned int SCR_WIDTH = 1280;
@@ -118,7 +118,7 @@ std::string loadShader(const std::string filename)
     return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 }
 
-int basic_lighting_main()
+int model_loading_main()
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -314,32 +314,32 @@ int basic_lighting_main()
         objectShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
         objectShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
         objectShader.setFloat("pointLights[0].constant", 1.0f);
-        objectShader.setFloat("pointLights[0].linear", 0.09f);
-        objectShader.setFloat("pointLights[0].quadratic", 0.032f);
+        objectShader.setFloat("pointLights[0].linear", 0.09);
+        objectShader.setFloat("pointLights[0].quadratic", 0.032);
         // point light 2
         objectShader.setVec3("pointLights[1].position", pointLightPositions[1]);
         objectShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
         objectShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
         objectShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
         objectShader.setFloat("pointLights[1].constant", 1.0f);
-        objectShader.setFloat("pointLights[1].linear", 0.09f);
-        objectShader.setFloat("pointLights[1].quadratic", 0.032f);
+        objectShader.setFloat("pointLights[1].linear", 0.09);
+        objectShader.setFloat("pointLights[1].quadratic", 0.032);
         // point light 3
         objectShader.setVec3("pointLights[2].position", pointLightPositions[2]);
         objectShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
         objectShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
         objectShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
         objectShader.setFloat("pointLights[2].constant", 1.0f);
-        objectShader.setFloat("pointLights[2].linear", 0.09f);
-        objectShader.setFloat("pointLights[2].quadratic", 0.032f);
+        objectShader.setFloat("pointLights[2].linear", 0.09);
+        objectShader.setFloat("pointLights[2].quadratic", 0.032);
         // point light 4
         objectShader.setVec3("pointLights[3].position", pointLightPositions[3]);
         objectShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
         objectShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
         objectShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
         objectShader.setFloat("pointLights[3].constant", 1.0f);
-        objectShader.setFloat("pointLights[3].linear", 0.09f);
-        objectShader.setFloat("pointLights[3].quadratic", 0.032f);
+        objectShader.setFloat("pointLights[3].linear", 0.09);
+        objectShader.setFloat("pointLights[3].quadratic", 0.032);
         // spotLight
         objectShader.setVec3("spotLight.position", camera.Position);
         objectShader.setVec3("spotLight.direction", camera.Front);
@@ -347,8 +347,8 @@ int basic_lighting_main()
         objectShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
         objectShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
         objectShader.setFloat("spotLight.constant", 1.0f);
-        objectShader.setFloat("spotLight.linear", 0.09f);
-        objectShader.setFloat("spotLight.quadratic", 0.032f);
+        objectShader.setFloat("spotLight.linear", 0.09);
+        objectShader.setFloat("spotLight.quadratic", 0.032);
         objectShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
         objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 

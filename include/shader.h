@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glm/glm/glm.hpp>
+#include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -36,7 +36,7 @@ public:
 
 private:
     void loadShader();
-    void checkCompileErrors(GLuint shader, std::string type);
+    void checkCompileErrors(unsigned int shader, std::string type);
 protected:
     std::unordered_map<unsigned int, ShaderS> m_shaderTable;
 };

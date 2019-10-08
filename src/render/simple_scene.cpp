@@ -1,5 +1,6 @@
 #pragma once 
 
+
 #include "pch.h"
 #include <iostream>
 #include <fstream>
@@ -7,6 +8,7 @@
 #include <string>
 
 #include "glad/glad.h"
+#define GLFW_DLL
 #include <glfw/glfw3.h>
 
 #include "shader.h"
@@ -15,8 +17,8 @@
 
 #include "rslib.h"
 
-#include <glm/glm/glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace simple_scene
 {
