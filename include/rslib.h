@@ -3,13 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 class RSLib {
-    enum class ResourceType {
-        SHADER = 0,
-        TEXTURE,
-        NUM_RESOURCES,
-    };
 public:
     virtual ~RSLib();
     static RSLib* instance();
@@ -24,7 +20,7 @@ public:
     int numResPaths();
 protected:
     int initResPaths();
-    std::string getResourceFileName(const std::string& fileName, ResourceType resType);
+    std::string getResourceFileName(const std::string& fileName, std::string resType);
     std::string getFileNameWoExt(const std::string& fileName);
     std::string getSpvFileName(const std::string& fileName);
     int glsl2spv(const std::string& glslFileName, const std::string& spvFileName);
@@ -38,7 +34,8 @@ private:
     
 private:
     bool m_enableSPVDump;
-    std::vector<std::string> resPaths[static_cast<int>(ResourceType::NUM_RESOURCES)];
+    std::vector<std::string> resTypeStrings;
+    std::unordered_map<std::string, std::vector<std::string>> resPaths;
 };
 
 

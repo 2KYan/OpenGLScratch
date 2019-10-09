@@ -10,9 +10,7 @@
 #endif
 
 #include <sys/stat.h>
-#include <vector>
-#include <unordered_map>
-#include <string>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
@@ -22,7 +20,7 @@
 #pragma warning(disable:4996)
 
 RSLib* RSLib::instance()
-{
+{ 
     std::mutex inst_m;
     std::lock_guard<std::mutex> l(inst_m);
 
@@ -38,6 +36,7 @@ RSLib* RSLib::instance()
 
 RSLib::RSLib() 
 {
+    resTypeStrings.assign({ "shader", "texture", "model" });
     m_enableSPVDump = false;
 }
 
@@ -48,11 +47,10 @@ RSLib::~RSLib()
 int RSLib::initResPaths()
 {
     char* envPath = nullptr;
-    std::vector<std::string> paths = { "./data/", "../data/" };
-    std::vector<std::string> resourceTypeStrings = { "shader/", "texture/" };
+    std::vector<std::string> paths = { "data", "../data" };
 
     std::unordered_map<std::string, std::string> envPaths = {
-        { "DEV_HOME", "/data/"},
+        { "DEV_HOME", "/data"},
     };
 
     for (const auto& envVar : envPaths) {
@@ -61,18 +59,20 @@ int RSLib::initResPaths()
         }
     }
 
-    std::string resPath;
+    std::string curPath;
     struct stat buffer;
-    for (int i = 0; i < static_cast<int>(ResourceType::NUM_RESOURCES); ++i) {
-        resPaths[i].clear();
+    for (auto& resType : resTypeStrings) {
+        if (resPaths.find(resType) != resPaths.end()) {
+            resPaths[resType].clear();
+        }
         for (const auto& path : paths) {
-            resPath = path;
-            if (stat(resPath.c_str(), &buffer) == 0) {
-                resPaths[i].push_back(resPath);
+            curPath = path + "/";
+            if (stat(curPath.c_str(), &buffer) == 0) {
+                resPaths[resType].push_back(curPath);
             }
-            resPath = path + resourceTypeStrings[i];
-            if (stat(resPath.c_str(), &buffer) == 0) {
-                resPaths[i].push_back(resPath);
+            curPath = path + "/" + resType + "/";
+            if (stat(curPath.c_str(), &buffer) == 0) {
+                resPaths[resType].push_back(curPath);
             }
         }
     }
@@ -84,7 +84,7 @@ int RSLib::numResPaths()
 {
     int numPaths = 0;
     for (auto& p: resPaths) {
-        numPaths += int(p.size());
+        numPaths += int(p.second.size());
     }
     return numPaths;
 }
@@ -93,21 +93,22 @@ std::string RSLib::getShaderFileName(const char* fileName) {
     if (fileName == nullptr)
         return std::string();
     else
-        return getResourceFileName(fileName, ResourceType::SHADER);
+        return getResourceFileName(fileName, "shader");
 }
 
 std::string RSLib::getTextureFileName(const char* fileName) {
     if (fileName == nullptr)
         return std::string();
     else
-        return getResourceFileName(fileName, ResourceType::TEXTURE);
+        return getResourceFileName(fileName, "texture");
 }
 
-std::string RSLib::getResourceFileName(const std::string& fileName, ResourceType resType)
+std::string RSLib::getResourceFileName(const std::string& fileName, std::string resType)
 {
+    std::transform(resType.begin(), resType.end(), resType.begin(), ::tolower);
     if (fileName == "") return std::string();
     struct stat buffer;
-    for (const auto& resPath : resPaths[static_cast<int>(resType)]) {
+    for (const auto& resPath : resPaths[resType]) {
         if (stat((resPath + fileName).c_str(), &buffer) == 0) {
             return resPath + fileName;
         }
