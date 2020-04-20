@@ -89,6 +89,14 @@ int RSLib::numResPaths()
     return numPaths;
 }
 
+std::string RSLib::getModelFileName(const char* fileName)
+{
+    if (fileName == nullptr)
+        return std::string();
+    else
+        return getResourceFileName(fileName, "model");
+}
+
 std::string RSLib::getShaderFileName(const char* fileName) {
     if (fileName == nullptr)
         return std::string();

@@ -10,6 +10,7 @@ public:
     virtual ~RSLib();
     static RSLib* instance();
 
+    std::string getModelFileName(const char* fileName);
     std::string getShaderFileName(const char* fileName);
     std::string getTextureFileName(const char* fileName);
     int execCmd(std::string & cmd);
