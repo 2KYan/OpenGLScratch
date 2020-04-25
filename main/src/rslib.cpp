@@ -47,7 +47,7 @@ RSLib::~RSLib()
 int RSLib::initResPaths()
 {
     char* envPath = nullptr;
-    std::vector<std::string> paths = { "data", "../data" };
+    std::vector<std::string> paths = { "data", "../data", "../shared" };
 
     std::unordered_map<std::string, std::string> envPaths = {
         { "DEV_HOME", "/data"},
