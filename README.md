@@ -1,1 +1,5 @@
 # OpenGLScratch
+# Requirements
+
+- glm
+- assimp
