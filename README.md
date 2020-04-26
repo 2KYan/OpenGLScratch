@@ -1,5 +1,6 @@
 # OpenGLScratch
-# Requirements
 
-- glm
+## Library Requirements
 - assimp
+- glfw3
+- glm

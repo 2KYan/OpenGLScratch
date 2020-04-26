@@ -19,6 +19,9 @@
     <Filter Include="Render">
       <UniqueIdentifier>{24ed5b80-4b1a-474b-9aca-2c619b8ff448}</UniqueIdentifier>
     </Filter>
+    <Filter Include="getopt">
+      <UniqueIdentifier>{ebc78ab1-202e-4090-97c3-e4052c5b8d44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="render\simple_scene.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="getopt.c">
+      <Filter>getopt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\glad\glad.h">
@@ -61,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="render\render_scene.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\getopt.h">
+      <Filter>getopt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

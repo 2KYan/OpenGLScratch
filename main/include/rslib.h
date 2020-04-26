@@ -7,9 +7,18 @@
 
 class RSLib {
 public:
+    struct args {
+        int m;
+        int n;
+        int k;
+        int verbose;
+    };
+
+public:
     virtual ~RSLib();
     static RSLib* instance();
 
+    struct args parse_arguments(int argc, char** argv);
     std::string getModelFileName(const char* fileName);
     std::string getShaderFileName(const char* fileName);
     std::string getTextureFileName(const char* fileName);

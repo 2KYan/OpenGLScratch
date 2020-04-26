@@ -16,6 +16,8 @@
 #include <streambuf>
 #include <mutex>
 
+#include "getopt.h"
+
 //#include "shaderc/shaderc.hpp"
 #pragma warning(disable:4996)
 
@@ -42,6 +44,67 @@ RSLib::RSLib()
 
 RSLib::~RSLib()
 {
+}
+
+RSLib::args RSLib::parse_arguments(int argc, char** argv)
+{
+    struct args _arg;
+    struct option long_options[] = {
+        /* These options set a flag. */
+        { "verbose", no_argument, &(_arg.verbose), 1 },
+        { "brief", no_argument, &(_arg.verbose), 0 },
+        /* These options don’t set a flag.
+         We distinguish them by their indices. */
+        { "m", required_argument, 0, 'm' },
+        { "n", required_argument, 0, 'n' },
+        { "k", required_argument, 0, 'k' },
+        { 0, 0, 0, 0 }
+    };
+
+    while (1) {
+        /* getopt_long stores the option index here. */
+        int option_index = 0;
+
+        int c = getopt_long(argc, argv, "m:n:k:",
+            long_options, &option_index);
+
+        /* Detect the end of the options. */
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 0:
+            /* If this option set a flag, do nothing else now. */
+            if (long_options[option_index].flag != 0)
+                break;
+            printf("option %s", long_options[option_index].name);
+            if (optarg)
+                printf(" with arg %s", optarg);
+            printf("\n");
+            break;
+
+        case 'm':
+            _arg.m = std::stoi(optarg, nullptr);
+            break;
+
+        case 'n':
+            _arg.n = std::stoi(optarg, nullptr);
+            break;
+
+        case 'k':
+            _arg.k = std::stoi(optarg, nullptr);
+            break;
+
+        case '?':
+            /* getopt_long already printed an error message. */
+            break;
+
+        default:
+            abort();
+        }
+    }
+
+    return _arg;
 }
 
 int RSLib::initResPaths()

@@ -1,0 +1,14 @@
+{
+    "version" : 0.1,
+    "application" : {
+        "basic_lighting" : {
+            "model" : {
+            },
+            "shader" : {
+            },
+            "texture" : {
+            }
+        }
+    }
+
+}
