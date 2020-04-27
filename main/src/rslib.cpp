@@ -16,7 +16,10 @@
 #include <streambuf>
 #include <mutex>
 
+#include <spdlog/spdlog.h>
+
 #include "getopt.h"
+#include "config.h"
 
 //#include "shaderc/shaderc.hpp"
 #pragma warning(disable:4996)
@@ -30,7 +33,7 @@ RSLib* RSLib::instance()
     static bool isInit = false;
     if (isInit == false) {
         isInit = true;
-        thisPtr->initResPaths();
+        thisPtr->init();
     }
 
     return thisPtr.get();
@@ -38,7 +41,8 @@ RSLib* RSLib::instance()
 
 RSLib::RSLib() 
 {
-    resTypeStrings.assign({ "shader", "texture", "model" });
+    resTypeStrings.assign({ "config", "shader", "texture", "model" });
+    m_arg.config = "default.json";
     m_enableSPVDump = false;
 }
 
@@ -46,74 +50,15 @@ RSLib::~RSLib()
 {
 }
 
-RSLib::args RSLib::parse_arguments(int argc, char** argv)
-{
-    struct args _arg;
-    struct option long_options[] = {
-        /* These options set a flag. */
-        { "verbose", no_argument, &(_arg.verbose), 1 },
-        { "brief", no_argument, &(_arg.verbose), 0 },
-        /* These options don’t set a flag.
-         We distinguish them by their indices. */
-        { "m", required_argument, 0, 'm' },
-        { "n", required_argument, 0, 'n' },
-        { "k", required_argument, 0, 'k' },
-        { 0, 0, 0, 0 }
-    };
-
-    while (1) {
-        /* getopt_long stores the option index here. */
-        int option_index = 0;
-
-        int c = getopt_long(argc, argv, "m:n:k:",
-            long_options, &option_index);
-
-        /* Detect the end of the options. */
-        if (c == -1)
-            break;
-
-        switch (c) {
-        case 0:
-            /* If this option set a flag, do nothing else now. */
-            if (long_options[option_index].flag != 0)
-                break;
-            printf("option %s", long_options[option_index].name);
-            if (optarg)
-                printf(" with arg %s", optarg);
-            printf("\n");
-            break;
-
-        case 'm':
-            _arg.m = std::stoi(optarg, nullptr);
-            break;
-
-        case 'n':
-            _arg.n = std::stoi(optarg, nullptr);
-            break;
-
-        case 'k':
-            _arg.k = std::stoi(optarg, nullptr);
-            break;
-
-        case '?':
-            /* getopt_long already printed an error message. */
-            break;
-
-        default:
-            abort();
-        }
-    }
-
-    return _arg;
-}
-
-int RSLib::initResPaths()
+int RSLib::init()
 {
     char* envPath = nullptr;
-    std::vector<std::string> paths = { "data", "../data", "../shared" };
+    std::vector<std::string> paths = { "./", "../", "./data", "../data", "./shared", "../shared" };
 
     std::unordered_map<std::string, std::string> envPaths = {
-        { "DEV_HOME", "/data"},
+        { "STEM", "/"},
+        { "STEM", "/data"},
+        { "STEM", "/shared"},
     };
 
     for (const auto& envVar : envPaths) {
@@ -143,13 +88,76 @@ int RSLib::initResPaths()
     return 0;
 }
 
-int RSLib::numResPaths()
+RSLib::args RSLib::initConfig(int argc, char** argv)
 {
-    int numPaths = 0;
-    for (auto& p: resPaths) {
-        numPaths += int(p.second.size());
+    struct option long_options[] = {
+        /* These options set a flag. */
+        { "verbose", no_argument, &(m_arg.verbose), 1 },
+        { "brief", no_argument, &(m_arg.verbose), 0 },
+        /* These options don’t set a flag.
+         We distinguish them by their indices. */
+        { "config", required_argument, 0, 'c' },
+        //{ "n", required_argument, 0, 'n' },
+        //{ "k", required_argument, 0, 'k' },
+        { 0, 0, 0, 0 }
+    };
+
+    while (1) {
+        /* getopt_long stores the option index here. */
+        int option_index = 0;
+
+        int c = getopt_long(argc, argv, "c:",
+            long_options, &option_index);
+
+        /* Detect the end of the options. */
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 0:
+            /* If this option set a flag, do nothing else now. */
+            if (long_options[option_index].flag != 0)
+                break;
+            printf("option %s", long_options[option_index].name);
+            if (optarg)
+                printf(" with arg %s", optarg);
+            printf("\n");
+            break;
+
+        case 'c':
+            m_arg.config = std::string(optarg);
+            break;
+
+        case 'k':
+            m_arg.k = std::stoi(optarg, nullptr);
+            break;
+
+        case '?':
+            /* getopt_long already printed an error message. */
+            break;
+
+        default:
+            abort();
+        }
     }
-    return numPaths;
+
+    auto cfg_name = getConfigFileName(m_arg.config.c_str());
+    m_config = std::make_shared<Config>(cfg_name);
+
+    return m_arg;
+}
+
+std::shared_ptr<Config> RSLib::getConfig()
+{
+    return m_config;
+}
+
+std::string RSLib::getConfigFileName(const char* fileName)
+{
+    if (fileName == nullptr)
+        return std::string();
+    else
+        return getResourceFileName(fileName, "config");
 }
 
 std::string RSLib::getModelFileName(const char* fileName)
@@ -181,6 +189,7 @@ std::string RSLib::getResourceFileName(const std::string& fileName, std::string 
     struct stat buffer;
     for (const auto& resPath : resPaths[resType]) {
         if (stat((resPath + fileName).c_str(), &buffer) == 0) {
+            spdlog::info("Find resource[{0}] file {1}", resType, resPath + fileName);
             return resPath + fileName;
         }
     }

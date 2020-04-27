@@ -148,8 +148,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="getopt.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="renderBase.cpp" />
     <ClCompile Include="render\basic_lighting.cpp" />
     <ClCompile Include="render\model_loading.cpp" />
     <ClCompile Include="render\simple_scene.cpp" />
@@ -162,8 +164,18 @@
     <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\camera.h" />
+    <ClInclude Include="include\config.h" />
     <ClInclude Include="include\getopt.h" />
     <ClInclude Include="include\glad\glad.h" />
+    <ClInclude Include="include\mesh.h" />
+    <ClInclude Include="include\model.h" />
+    <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\rslib.h" />
+    <ClInclude Include="include\shader.h" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\texture.h" />
+    <ClInclude Include="renderBase.h" />
     <ClInclude Include="render\render_scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

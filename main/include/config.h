@@ -1,12 +1,45 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include <string>
-#include <deque>
+#pragma once
 
-struct Node {
-    std::string name;
-    std::deque<Node> child;
+#include "rapidjson/document.h"
+#include "rapidjson/pointer.h"
+
+#include <string>
+class Config {
+public:
+    Config(std::string name);
+    ~Config();
+
+    int width() { return m_width; }
+    int height() { return m_height;  }
+
+
+protected:
+    void set_current(std::string app)
+    {
+        m_app = app;
+        m_current = m_config + "/" + m_app + "/";
+    }
+
+    int get_int(std::string key);
+    int get_uint(std::string key);
+    std::string get_string(std::string key);
+
+    rapidjson::Document::ValueType* get_config(std::string key);
+
+protected:
+    std::string m_cfg_name;
+    
+    unsigned m_width = 0;
+    unsigned m_height = 0 ;
+
+    std::string m_app = "";
+
+    rapidjson::Document m_doc;
+    std::string m_config = "config";
+    std::string m_current = "";
 };
 
 #endif //_CONFIG_Hy

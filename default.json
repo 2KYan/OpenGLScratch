@@ -1,14 +1,21 @@
 {
     "version" : 0.1,
-    "application" : {
-        "basic_lighting" : {
-            "model" : {
+    "screen_width": 1280,
+    "screen_height": 800,
+    "application": "basic_lighting",
+    "config": {
+        "basic_lighting": {
+            "model": {
+                "1":  5
             },
             "shader" : {
+                "2":  6
             },
             "texture" : {
+                "3":  7
             }
         }
     }
+
 
 }
