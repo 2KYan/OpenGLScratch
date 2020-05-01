@@ -47,7 +47,7 @@ Config::Config(std::string name)
 
 Config::~Config()
 {
-    m_doc.Clear();
+    //m_doc.Clear();
 }
 
 rapidjson::Document::ValueType* Config::get_config(std::string key)
