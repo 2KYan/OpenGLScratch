@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/extern/include;$(ProjectDir)/include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)/extern/include;$(ProjectDir)/include;$(ProjectDir)/render</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -149,13 +149,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="config.cpp" />
-    <ClCompile Include="getopt.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="renderBase.cpp" />
-    <ClCompile Include="render\basic_lighting.cpp" />
-    <ClCompile Include="render\model_loading.cpp" />
-    <ClCompile Include="render\simple_scene.cpp" />
+    <ClCompile Include="render\basiclighting.cpp" />
+    <ClCompile Include="render\modelloading.cpp" />
+    <ClCompile Include="render\renderBase.cpp" />
+    <ClCompile Include="render\simple.cpp" />
+    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\getopt.c" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\model.cpp" />
@@ -176,8 +176,10 @@
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\texture.h" />
-    <ClInclude Include="renderBase.h" />
-    <ClInclude Include="render\render_scene.h" />
+    <ClInclude Include="render\basiclighting.h" />
+    <ClInclude Include="render\modelloading.h" />
+    <ClInclude Include="render\renderBase.h" />
+    <ClInclude Include="render\simple.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

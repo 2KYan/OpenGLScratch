@@ -48,37 +48,31 @@
     <ClCompile Include="src\glad.c">
       <Filter>glad</Filter>
     </ClCompile>
-    <ClCompile Include="render\basic_lighting.cpp">
+    <ClCompile Include="render\renderBase.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="render\model_loading.cpp">
+    <ClCompile Include="render\basiclighting.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="render\simple_scene.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="getopt.c">
+    <ClCompile Include="src\getopt.c">
       <Filter>getopt</Filter>
     </ClCompile>
-    <ClCompile Include="renderBase.cpp">
+    <ClCompile Include="src\config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render\simple.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="config.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="render\modelloading.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\glad\glad.h">
       <Filter>glad</Filter>
     </ClInclude>
-    <ClInclude Include="render\render_scene.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="include\getopt.h">
       <Filter>getopt</Filter>
-    </ClInclude>
-    <ClInclude Include="renderBase.h">
-      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="include\camera.h">
       <Filter>Header Files</Filter>
@@ -106,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="include\texture.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderBase.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\basiclighting.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\simple.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\modelloading.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

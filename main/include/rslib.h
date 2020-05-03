@@ -27,6 +27,7 @@ public:
     std::string getModelFileName(const char* fileName);
     std::string getShaderFileName(const char* fileName);
     std::string getTextureFileName(const char* fileName);
+    std::string loadFile(std::string filename);
     int execCmd(std::string & cmd);
     void* glslRead(const char* fileName, size_t& size);
     std::vector<uint32_t> glslCompile(const char* fileName, size_t& size, int shader_type);

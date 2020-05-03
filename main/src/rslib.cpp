@@ -182,6 +182,12 @@ std::string RSLib::getTextureFileName(const char* fileName) {
         return getResourceFileName(fileName, "texture");
 }
 
+std::string RSLib::loadFile(std::string filename)
+{
+    std::ifstream ifs(filename);
+    return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+}
+
 std::string RSLib::getResourceFileName(const std::string& fileName, std::string resType)
 {
     std::transform(resType.begin(), resType.end(), resType.begin(), ::tolower);
