@@ -53,12 +53,18 @@ RSLib::~RSLib()
 int RSLib::init()
 {
     char* envPath = nullptr;
-    std::vector<std::string> paths = { "./", "../", "./data", "../data", "./shared", "../shared" };
+    std::vector<std::string> paths = {  
+        ".", 
+        "..", 
+        "./data", 
+        "../data", 
+        "./shared", 
+        "../shared",
+    };
 
     std::unordered_map<std::string, std::string> envPaths = {
         { "STEM", "/"},
         { "STEM", "/data"},
-        { "STEM", "/shared"},
     };
 
     for (const auto& envVar : envPaths) {
@@ -188,31 +194,61 @@ std::string RSLib::loadFile(std::string filename)
     return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 }
 
+void RSLib::updateResourcePath(std::string&& dirName, std::vector<std::string> resList)
+{
+    if (resList.size() == 0) {
+        resList = resTypeStrings;
+    }
+    for (auto& resType : resList) {
+        if (resPaths.find(resType) != resPaths.end()) {
+            bool add = true;
+            for (auto& p : resPaths[resType]) {
+                if (p == dirName) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                resPaths[resType].push_back(dirName);
+            }
+        }
+    }
+}
+
 std::string RSLib::getResourceFileName(const std::string& fileName, std::string resType)
 {
     std::transform(resType.begin(), resType.end(), resType.begin(), ::tolower);
     if (fileName == "") return std::string();
     struct stat buffer;
     for (const auto& resPath : resPaths[resType]) {
-        if (stat((resPath + fileName).c_str(), &buffer) == 0) {
-            spdlog::info("Find resource[{0}] file {1}", resType, resPath + fileName);
-            return resPath + fileName;
+        std::string fPath = resPath + fileName;
+        if (stat(fPath.c_str(), &buffer) == 0) {
+            updateResourcePath(getDirectoryName(fPath), {});
+            spdlog::info("Find resource[{0}] file {1}", resType, fPath);
+            return fPath;
         }
     }
 
     return std::string();
 }
 
-std::string RSLib::getFileNameWoExt(const std::string& fileName)
+std::string RSLib::getDirectoryName(const std::string& fileName)
 {
-    std::string fileNameStr(fileName);
-    std::string sep("\\");
+    std::string fileNameStr = unifyPath(fileName);
     size_t offset = 0;
-    while ((offset = fileNameStr.find(sep, offset)) != std::string::npos) {
-        fileNameStr.replace(offset, sep.length(), "/");
-    }
     if ((offset = fileNameStr.rfind("/", fileNameStr.length())) != std::string::npos) {
-        fileNameStr.erase(0, offset + 1);
+        fileNameStr.erase(offset+1);
+    }
+
+    return fileNameStr;
+}
+
+std::string RSLib::getBaseName(const std::string& fileName) const
+{
+    std::string fileNameStr = unifyPath(fileName);
+    size_t offset = 0;
+    if ((offset = fileNameStr.rfind("/", fileNameStr.length())) != std::string::npos) {
+        fileNameStr.erase(0, offset);
     }
 
     return fileNameStr;
@@ -220,7 +256,7 @@ std::string RSLib::getFileNameWoExt(const std::string& fileName)
 
 std::string RSLib::getSpvFileName(const std::string& fileName)
 {
-    std::string fileNameStr(getFileNameWoExt(fileName));
+    std::string fileNameStr(getBaseName(fileName));
     size_t offset = 0;
     while ((offset = fileNameStr.find('.', offset)) != std::string::npos) {
         fileNameStr.replace(offset, 1, 1, '-');
@@ -312,6 +348,17 @@ int RSLib::glsl2spv(const std::string& glslFileName, const std::string& outSpvFi
 {
     std::string cmdLine = std::string("glslangValidator -s -V -o") + outSpvFileName + " " + glslFileName;
     return execCmd(cmdLine);
+}
+
+std::string RSLib::unifyPath(const std::string fPath) const
+{
+    std::string fileNameStr(fPath);
+    std::string sep("\\");
+    size_t offset = 0;
+    while ((offset = fileNameStr.find(sep, offset)) != std::string::npos) {
+        fileNameStr.replace(offset, sep.length(), "/");
+    }
+    return fileNameStr;
 }
 
 int RSLib::execCmd(std::string& cmd) 

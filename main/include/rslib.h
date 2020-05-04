@@ -35,12 +35,16 @@ public:
 
 protected:
     int init();
+    void updateResourcePath(std::string&& dirName, std::vector<std::string> resList);
     std::string getResourceFileName(const std::string& fileName, std::string resType);
-    std::string getFileNameWoExt(const std::string& fileName);
+    std::string getDirectoryName(const std::string& fileName);
+    std::string getBaseName(const std::string& fileName) const;
     std::string getSpvFileName(const std::string& fileName);
     int glsl2spv(const std::string& glslFileName, const std::string& spvFileName);
 
-private:
+    std::string unifyPath(const std::string fPath) const;
+
+private :
     RSLib();
     RSLib(RSLib const&) = delete;
     RSLib& operator=(RSLib const &) = delete;
@@ -48,11 +52,11 @@ private:
     RSLib& operator=(RSLib &&) = delete;
     
 private:
-    bool m_enableSPVDump;
     std::vector<std::string> resTypeStrings;
     std::unordered_map<std::string, std::vector<std::string>> resPaths;
     std::shared_ptr<Config> m_config;
     struct args m_arg;
+    bool m_enableSPVDump;
 };
 
 

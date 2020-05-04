@@ -2,6 +2,7 @@
 #include "renderBase.h"
 
 class Shader;
+class Model;
 class ModelLoading : public RenderBase {
 
 public:
@@ -10,9 +11,6 @@ public:
     int cleanup();
 
 public:
-    std::shared_ptr<Shader> m_ObjShader;
-    std::shared_ptr<Shader> m_LightShader;
-    unsigned VBO;
-    unsigned cubeVAO;
-    unsigned lightVAO;
+    std::shared_ptr<Model> m_model;
+    std::shared_ptr<Shader> m_Shader;
 };

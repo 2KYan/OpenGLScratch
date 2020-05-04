@@ -9,7 +9,7 @@
 class Model
 {
 public:
-    Model(char* path, bool gamma = false);
+    Model(const char* path, bool gamma = false);
     void Draw(std::shared_ptr<Shader> shader);
 private:
     std::vector<Texture_t> m_textures;
