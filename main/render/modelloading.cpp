@@ -18,7 +18,7 @@ int ModelLoading::prepare()
     glEnable(GL_DEPTH_TEST);
 
     // load model
-    std::string model_name = RSLib::instance()->getModelFileName("rock/rock.obj");
+    std::string model_name = RSLib::instance()->getModelFileName("backpack/backpack.obj");
     m_model = std::make_shared<Model>(model_name.c_str());
     printf("%s\n", model_name.c_str());
 

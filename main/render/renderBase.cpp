@@ -8,6 +8,8 @@
 #include <streambuf>
 #include <string>
 
+#include "stb_image.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -16,7 +18,7 @@ RenderBase::RenderBase()
     auto config = RSLib::instance()->getConfig();
     m_scr_width = config->width();
     m_scr_height = config->height();
-    m_camera = std::make_shared<Camera>(glm::vec3(0.5f, 0.5f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), float(m_scr_width)/m_scr_height);
+    m_camera = std::make_shared<Camera>(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), float(m_scr_width)/m_scr_height);
 
     m_lastX = m_scr_width / 2.0f;
     m_lastY = m_scr_height / 2.0f;
@@ -157,6 +159,9 @@ int RenderBase::init()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    stbi_set_flip_vertically_on_load(true);
+
 
     return 0;
 }
