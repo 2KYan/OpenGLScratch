@@ -15,7 +15,12 @@ public:
     int width() { return m_width; }
     int height() { return m_height;  }
 
+    std::string get_app() { return m_app;  }
+    void set_app(std::string app);
 
+    int get_int(std::string key);
+    int get_uint(std::string key);
+    std::string get_string(std::string key);
 protected:
     void set_current(std::string app)
     {
@@ -23,9 +28,6 @@ protected:
         m_current = m_config + "/" + m_app + "/";
     }
 
-    int get_int(std::string key);
-    int get_uint(std::string key);
-    std::string get_string(std::string key);
 
     rapidjson::Document::ValueType* get_config(std::string key);
 

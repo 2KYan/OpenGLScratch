@@ -1,6 +1,7 @@
-#include "ModelLoading.h"
+#include "render.h"
 
 #include "rslib.h"
+#include "config.h"
 
 #include "shader.h"
 #include "texture.h"
@@ -11,25 +12,29 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-int ModelLoading::prepare()
+int Render::prepare()
 {
+    auto config = RSLib::instance()->getConfig();
+
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
     // load model
-    std::string model_name = RSLib::instance()->getModelFileName("backpack/backpack.obj");
+    std::string model_name = RSLib::instance()->getModelFileName(config->get_string("model/name").c_str());
     m_model = std::make_shared<Model>(model_name.c_str());
     printf("%s\n", model_name.c_str());
 
     // build and compile our shader zprogram
     // ------------------------------------
-    m_Shader = std::make_shared<Shader>("modelloading.vert", "modelloading.frag");
+    auto vs = config->get_string("shader/vs");
+    auto fs = config->get_string("shader/fs");
+    m_Shader = std::make_shared<Shader>(vs.c_str(),fs.c_str());
 
     return 0;
 }
 
-int ModelLoading::render()
+int Render::render()
 {
 
     // render loop
@@ -79,7 +84,7 @@ int ModelLoading::render()
     return 0;
 }
 
-int ModelLoading::cleanup()
+int Render::cleanup()
 {
 
     return 0;

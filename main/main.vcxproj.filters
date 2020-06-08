@@ -22,12 +22,12 @@
     <Filter Include="getopt">
       <UniqueIdentifier>{ebc78ab1-202e-4090-97c3-e4052c5b8d44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{951f630c-a2f5-4d8b-8b59-b50c2e351ade}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
@@ -36,22 +36,10 @@
     <ClCompile Include="src\rslib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\glad.c">
       <Filter>glad</Filter>
     </ClCompile>
     <ClCompile Include="render\renderBase.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
-    <ClCompile Include="render\basiclighting.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\getopt.c">
@@ -60,11 +48,29 @@
     <ClCompile Include="src\config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="render\simple.cpp">
+    <ClCompile Include="render\render.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="render\modelloading.cpp">
+    <ClCompile Include="app\basiclighting.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\simple.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="render\mesh.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\model.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shader.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\texture.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="engine.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,17 +107,20 @@
     <ClInclude Include="include\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="render\renderBase.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="app\basiclighting.h">
+      <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="render\basiclighting.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="app\simple.h">
+      <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="render\simple.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="include\render.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="render\modelloading.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="include\renderBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

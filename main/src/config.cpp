@@ -30,19 +30,23 @@ Config::Config(std::string name)
         return;
     }
     
-    m_width = get_uint("screen_width");
-    m_height = get_uint("screen_height");
     
     if (m_doc.HasMember("application")) {
-        m_app = m_doc["application"].GetString();
+        m_app = get_string("application");
+        set_app(m_app);
+    } else {
+        spdlog::error("Error in finding application in config file {0}.", m_cfg_name);
     }
+}
 
-    //Set current Json prefix
-    std::string app = get_string("application");
+void Config::set_app(std::string app)
+{
     set_current(app);
 
-    spdlog::info("Reading {3} for {0} with screen {1}x{2}.", m_app, m_width, m_height, app);
+    m_width = get_uint("screen_width");
+    m_height = get_uint("screen_height");
 
+    spdlog::info("Reading {3} for {0} with screen {1}x{2}.", m_app, m_width, m_height, app);
 }
 
 Config::~Config()
@@ -53,14 +57,20 @@ Config::~Config()
 rapidjson::Document::ValueType* Config::get_config(std::string key)
 {
     using namespace rapidjson;
+
+    Document::ValueType* obj = &m_doc;
+    if (obj->HasMember(key.c_str())) {
+        obj = &(*obj)[key.c_str()];
+        return obj;
+    }
+
     std::string f_key = m_current + key;
     std::vector<std::string> r = split<std::vector<std::string>>(f_key, '/');
 
-    Document::ValueType* obj = &m_doc;
     std::string cur;
-    for (auto& k : r) {
-        cur = cur + "/" + k;
-        auto k = key.c_str();
+    for (auto& ak : r) {
+        cur = cur + "/" + ak;
+        auto k = ak.c_str();
 
         if (obj->HasMember(k)) {
             obj = &(*obj)[k];

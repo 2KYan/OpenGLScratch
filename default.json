@@ -1,18 +1,16 @@
 {
     "version" : 0.1,
-    "screen_width": 1280,
-    "screen_height": 800,
-    "application": "basic_lighting",
+    "application": "model_loading",
     "config": {
-        "basic_lighting": {
+        "model_loading": {
+            "screen_width": 1280,
+            "screen_height": 800,
             "model": {
-                "1":  5
+                "name":  "backpack/backpack.obj"
             },
             "shader" : {
-                "2":  6
-            },
-            "texture" : {
-                "3":  7
+                "vs":  "model_loading.vert",
+                "fs":  "model_loading.frag"
             }
         }
     }

@@ -3,7 +3,7 @@
 
 class Shader;
 class Model;
-class ModelLoading : public RenderBase {
+class Render : public RenderBase {
 
 public:
     int prepare();
