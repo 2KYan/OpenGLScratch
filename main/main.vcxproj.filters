@@ -39,9 +39,6 @@
     <ClCompile Include="src\glad.c">
       <Filter>glad</Filter>
     </ClCompile>
-    <ClCompile Include="render\renderBase.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="src\getopt.c">
       <Filter>getopt</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="include\render.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\renderBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine.h">

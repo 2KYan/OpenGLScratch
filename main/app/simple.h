@@ -1,6 +1,6 @@
 #pragma once
-#include "renderBase.h"
-class Simple : public RenderBase{
+#include "render.h"
+class Simple : public Render{
 
 public:
     int prepare();

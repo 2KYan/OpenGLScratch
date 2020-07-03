@@ -156,7 +156,6 @@
     <ClCompile Include="render\mesh.cpp" />
     <ClCompile Include="render\model.cpp" />
     <ClCompile Include="render\render.cpp" />
-    <ClCompile Include="render\renderBase.cpp" />
     <ClCompile Include="render\shader.cpp" />
     <ClCompile Include="render\texture.cpp" />
     <ClCompile Include="src\config.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="include\model.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\render.h" />
-    <ClInclude Include="include\renderBase.h" />
     <ClInclude Include="include\rslib.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\stb_image.h" />

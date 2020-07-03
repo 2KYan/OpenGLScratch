@@ -1,9 +1,9 @@
 #pragma once
-#include "renderBase.h"
+#include "render.h"
 
 class Shader;
 
-class BasicLighting : public RenderBase {
+class BasicLighting : public Render{
 public:
     BasicLighting();
     virtual ~BasicLighting(); 
