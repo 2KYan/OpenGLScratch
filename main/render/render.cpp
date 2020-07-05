@@ -41,12 +41,13 @@ Render::Render()
     m_lastFrame = 0.0f;
 }
 
+
 Render::~Render()
 {
 }
 
 void Render::fb_resize_callback(GLFWwindow* window, int width, int height)
-{
+    {
     glViewport(0, 0, width, height);
 }
 
@@ -191,15 +192,7 @@ int Render::prepare()
     glEnable(GL_DEPTH_TEST);
 
     // load model
-    std::string model_name = RSLib::instance()->getModelFileName(config->get_string("model/name").c_str());
-    m_model = std::make_shared<Model>(model_name.c_str());
-    printf("%s\n", model_name.c_str());
-
-    // build and compile our shader zprogram
-    // ------------------------------------
-    auto vs = config->get_string("shader/vs");
-    auto fs = config->get_string("shader/fs");
-    m_Shader = std::make_shared<Shader>(vs.c_str(),fs.c_str());
+    m_model = std::make_shared<Model>("backpack");
 
     return 0;
 }
@@ -231,20 +224,13 @@ int Render::render()
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        // be sure to activate shader when setting uniforms/drawing objects
-        m_Shader->use();
-
         glm::mat4 projection = glm::perspective(glm::radians(m_camera->Zoom), (float)m_scr_width/ (float)m_scr_height, 0.1f, 100.0f);
         glm::mat4 view = m_camera->GetViewMatrix();
-        m_Shader->setMat4("projection", projection);
-        m_Shader->setMat4("view", view);
-
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); // it's a bit too big for our scene, so scale it down
-        m_Shader->setMat4("model", model);
-        m_model->Draw(m_Shader);
+        m_model->Draw(model, view, projection);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

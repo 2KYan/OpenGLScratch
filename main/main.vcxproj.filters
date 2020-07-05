@@ -66,8 +66,8 @@
     <ClCompile Include="render\texture.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="engine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="render\engine.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,7 +113,7 @@
     <ClInclude Include="include\render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine.h">
+    <ClInclude Include="include\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

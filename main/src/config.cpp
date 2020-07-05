@@ -100,3 +100,17 @@ std::string Config::get_string(std::string key)
     return v->GetString();
 
 }
+
+std::vector<std::string> Config::get_object_names(std::string key) 
+{
+    std::vector<std::string> result;
+    auto v = get_config(key);
+    if (v->IsObject()) {
+        for (const auto& o = v->MemberBegin(); o != v->MemberEnd(); ++v) {
+            result.push_back(std::string(o->name.GetString()));
+        }
+    }
+    
+    return result;
+
+}

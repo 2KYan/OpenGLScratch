@@ -11,6 +11,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{759D11
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{EDECB3A2-2668-460D-A5FC-6AD4089EBBA1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shader", "shader", "{6A82F1F4-99AB-4711-850D-4E91F216D98D}"
+	ProjectSection(SolutionItems) = preProject
+		data\shader\constant_color.frag = data\shader\constant_color.frag
+		data\shader\depth.frag = data\shader\depth.frag
+		data\shader\model_loading.frag = data\shader\model_loading.frag
+		data\shader\model_loading.vert = data\shader\model_loading.vert
+		data\shader\simple_light.frag = data\shader\simple_light.frag
+		data\shader\simple_transform.vert = data\shader\simple_transform.vert
+		data\shader\simple_triangle.frag = data\shader\simple_triangle.frag
+		data\shader\simple_triangle.vert = data\shader\simple_triangle.vert
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A82F1F4-99AB-4711-850D-4E91F216D98D} = {EDECB3A2-2668-460D-A5FC-6AD4089EBBA1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEBBC627-8350-4484-9F75-0CA72735D789}

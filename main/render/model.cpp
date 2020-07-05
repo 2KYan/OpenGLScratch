@@ -1,20 +1,40 @@
 #include <iostream>
+#include "rslib.h"
+#include "config.h"
 #include "Model.h"
 #include "texture.h"
+#include "shader.h"
 
-Model::Model(const char* path, bool gamma)
+Model::Model(std::string model_name, bool gamma)
 {
-    gammaCorrection = gamma;
-    loadModel(path);
+    auto config = RSLib::instance()->getConfig();
+    std::string model_prefix = "model/";
+    std::string model_resource = model_prefix + model_name + "/resource";
+    std::string shader_vs = model_prefix + model_name + "/shader/vs";
+    std::string shader_fs = model_prefix + model_name + "/shader/fs";
 
+    std::string model_path = RSLib::instance()->getModelFileName(config->get_string(model_resource).c_str());
+    printf("%s\n", model_path.c_str());
+    loadModel(model_path);
+
+    auto vs = config->get_string(shader_vs);
+    auto fs = config->get_string(shader_fs);
+    m_shader = std::make_shared<Shader>(vs.c_str(),fs.c_str());
+
+    gammaCorrection = gamma;
 }
 
-void Model::Draw(std::shared_ptr<Shader> shader)
+void Model::Draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj)
 {
-    for (auto& mesh : m_meshes) {
-        mesh.Draw(shader);
-    }
+    m_shader->use();
 
+    m_shader->setMat4("projection", proj);
+    m_shader->setMat4("view", view);
+    m_shader->setMat4("model", model);
+
+    for (auto& mesh : m_meshes) {
+        mesh.Draw(m_shader);
+    }
 }
 
 void Model::loadModel(std::string path)

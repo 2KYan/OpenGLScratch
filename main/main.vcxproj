@@ -151,8 +151,8 @@
   <ItemGroup>
     <ClCompile Include="app\basiclighting.cpp" />
     <ClCompile Include="app\simple.cpp" />
-    <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="render\engine.cpp" />
     <ClCompile Include="render\mesh.cpp" />
     <ClCompile Include="render\model.cpp" />
     <ClCompile Include="render\render.cpp" />
@@ -167,9 +167,9 @@
   <ItemGroup>
     <ClInclude Include="app\basiclighting.h" />
     <ClInclude Include="app\simple.h" />
-    <ClInclude Include="engine.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\config.h" />
+    <ClInclude Include="include\engine.h" />
     <ClInclude Include="include\getopt.h" />
     <ClInclude Include="include\glad\glad.h" />
     <ClInclude Include="include\mesh.h" />

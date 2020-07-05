@@ -4,9 +4,11 @@
 class Render;
 
 class Engine {
+    std::unique_ptr<Render> m_pRender;
 public:
+    Engine() = delete;
     Engine(int argc, char** argv);
-    virtual ~Engine();
+    ~Engine();
 
 public:
     int initWindow();
@@ -14,11 +16,9 @@ public:
     int run();
 
 private:
-    Engine() { Engine(0, nullptr); }
 
 
     bool m_bWindow;
 
-    std::shared_ptr<Render> m_pRender;
 };
 

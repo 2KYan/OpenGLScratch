@@ -7,6 +7,8 @@
 #include "rapidjson/pointer.h"
 
 #include <string>
+#include <vector>
+
 class Config {
 public:
     Config(std::string name);
@@ -21,6 +23,8 @@ public:
     int get_int(std::string key);
     int get_uint(std::string key);
     std::string get_string(std::string key);
+    std::vector<std::string> get_object_names(std::string key);
+
 protected:
     void set_current(std::string app)
     {

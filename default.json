@@ -6,14 +6,14 @@
             "screen_width": 1280,
             "screen_height": 800,
             "model": {
-                "name":  "backpack/backpack.obj"
-            },
-            "shader" : {
-                "vs":  "model_loading.vert",
-                "fs":  "model_loading.frag"
+                "backpack": {
+                    "resource": "backpack/backpack.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "depth.frag"
+                    }
+                }
             }
         }
     }
-
-
 }
