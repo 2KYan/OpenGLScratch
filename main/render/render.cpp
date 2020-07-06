@@ -196,12 +196,12 @@ int Render::prepare()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // load model
-    std::string model_prefix = "model";
-    auto models = config->get_object_names(model_prefix);
+    auto models = config->get_object_names("model");
     for (auto& m : models) {
-        bool enable = config->get_bool(model_prefix + "/" + m + "/enable");
+        std::string path = "model/" + m;
+        bool enable = config->get_bool(path + "/enable");
         if (enable) {
-            m_model.emplace_back(std::make_shared<Model>(m));
+            m_model.emplace_back(std::make_shared<Model>(m, path));
         }
     }
     return 0;

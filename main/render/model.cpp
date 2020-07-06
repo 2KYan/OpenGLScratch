@@ -5,16 +5,16 @@
 #include "texture.h"
 #include "shader.h"
 
-Model::Model(std::string model_name, bool gamma)
+Model::Model(std::string model_name, std::string path, bool gamma)
 {
     m_objname = model_name;
+    m_path = path;
 
     auto config = RSLib::instance()->getConfig();
     
-    std::string model_prefix = "model/";
-    std::string model_resource = model_prefix + model_name + "/resource";
-    std::string shader_vs = model_prefix + model_name + "/shader/vs";
-    std::string shader_fs = model_prefix + model_name + "/shader/fs";
+    std::string model_resource = path + "/resource";
+    std::string shader_vs = path + "/shader/vs";
+    std::string shader_fs = path + "/shader/fs";
 
     std::string model_path = RSLib::instance()->getModelFileName(config->get_string(model_resource).c_str());
     printf("%s\n", model_path.c_str());
@@ -38,6 +38,13 @@ void Model::Draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj)
     for (auto& mesh : m_meshes) {
         mesh.Draw(m_shader);
     }
+}
+
+bool Model::check(std::string attrib)
+{
+    auto config = RSLib::instance()->getConfig();
+
+    return config->get_bool(m_path + "/" + attrib);
 }
 
 void Model::loadModel(std::string path)

@@ -49,6 +49,11 @@ void Config::set_app(std::string app)
     spdlog::info("Reading {3} for {0} with screen {1}x{2}.", m_app, m_width, m_height, app);
 }
 
+bool Config::check_model(std::string attrib)
+{
+    return false;
+}
+
 Config::~Config()
 {
     //m_doc.Clear();

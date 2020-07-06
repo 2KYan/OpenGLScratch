@@ -11,15 +11,19 @@ class Shader;
 class Model
 {
 public:
-    Model(std::string model_name, bool gamma = false);
+    Model(std::string model_name, std::string path, bool gamma = false);
     void Draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj);
 
-    std::string name() {
+    std::string name()
+    {
         return m_objname;
-    }
+    };
 
+    bool check(std::string attrib);
 private:
     std::string m_objname;
+    std::string m_path;
+
     std::shared_ptr<Shader> m_shader;
     std::vector<Texture_t> m_textures;
     std::vector<Mesh> m_meshes;
