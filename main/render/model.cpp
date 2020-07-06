@@ -7,7 +7,10 @@
 
 Model::Model(std::string model_name, bool gamma)
 {
+    m_objname = model_name;
+
     auto config = RSLib::instance()->getConfig();
+    
     std::string model_prefix = "model/";
     std::string model_resource = model_prefix + model_name + "/resource";
     std::string shader_vs = model_prefix + model_name + "/shader/vs";
@@ -74,7 +77,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex;
         vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-        vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+        if (mesh->HasNormals()) {
+            vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+        }
         if (mesh->HasTextureCoords(0)) {
             vertex.TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
         } else {

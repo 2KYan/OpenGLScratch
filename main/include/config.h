@@ -20,6 +20,7 @@ public:
     std::string get_app() { return m_app;  }
     void set_app(std::string app);
 
+    bool get_bool(std::string key);
     int get_int(std::string key);
     int get_uint(std::string key);
     std::string get_string(std::string key);

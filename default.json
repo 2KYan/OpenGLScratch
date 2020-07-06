@@ -1,6 +1,6 @@
 {
     "version" : 0.1,
-    "application": "model_loading",
+    "application": "advanced",
     "config": {
         "model_loading": {
             "screen_width": 1280,
@@ -11,6 +11,36 @@
                     "shader" : {
                         "vs":  "model_loading.vert",
                         "fs":  "depth.frag"
+                    }
+                }
+            }
+        },
+        "advanced": {
+            "screen_width": 1280,
+            "screen_height": 800,
+            "model": {
+                "cube": {
+                    "enable" : true,
+                    "resource": "common/cube.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "model_loading.frag"
+                    }
+                },
+                "plan": {
+                    "enable":  true,
+                    "resource": "common/plan.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "model_loading.frag"
+                    }
+                },
+                "panel": {
+                    "enable":  true,
+                    "resource": "common/panel.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "alpha_kill.frag"
                     }
                 }
             }

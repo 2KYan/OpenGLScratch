@@ -4,6 +4,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <unordered_map>
 #include "mesh.h"
 class Shader;
 
@@ -12,7 +13,13 @@ class Model
 public:
     Model(std::string model_name, bool gamma = false);
     void Draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj);
+
+    std::string name() {
+        return m_objname;
+    }
+
 private:
+    std::string m_objname;
     std::shared_ptr<Shader> m_shader;
     std::vector<Texture_t> m_textures;
     std::vector<Mesh> m_meshes;

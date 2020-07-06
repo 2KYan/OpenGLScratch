@@ -14,6 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <fstream>
 #include <streambuf>
@@ -190,16 +192,38 @@ int Render::prepare()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // load model
-    m_model = std::make_shared<Model>("backpack");
-
+    std::string model_prefix = "model";
+    auto models = config->get_object_names(model_prefix);
+    for (auto& m : models) {
+        bool enable = config->get_bool(model_prefix + "/" + m + "/enable");
+        if (enable) {
+            m_model.emplace_back(std::make_shared<Model>(m));
+        }
+    }
     return 0;
 }
 
 int Render::render()
 {
+    std::unordered_map<std::string, std::vector<glm::vec3>> offset_table;
 
+    offset_table["cube"] = 
+        {   glm::vec3(-1.0f, 0.0f, -1.0f),
+            glm::vec3(2.0f, 0.0f, 0.0f),
+        };
+
+    offset_table["panel"] = 
+        {   glm::vec3(-1.5f, 0.0f, -0.48f),
+            glm::vec3(1.5f, 0.0f, 0.51f),
+            glm::vec3(0.0f, 0.0f, 0.7f),
+            glm::vec3(-0.3f, 0.0f, -2.3f),
+            glm::vec3(0.5f, 0.0f, -0.6f) 
+        };
+    
     // render loop
     // -----------
     while (!glfwWindowShouldClose(m_window)) {
@@ -230,7 +254,25 @@ int Render::render()
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); // it's a bit too big for our scene, so scale it down
-        m_model->Draw(model, view, projection);
+
+        for (auto& m : m_model) {
+            if (offset_table.find(m->name()) != offset_table.end()) {
+                std::map<float, glm::vec3> ordered;
+                for (auto& t : offset_table[m->name()]) {
+                    float distance = glm::length(m_camera->Position - t);
+                    ordered[distance] = t;
+                }
+                for (auto it = ordered.rbegin(); it != ordered.rend();it++) {
+                    model = glm::mat4(1.0f);
+                    model = glm::translate(model, it->second);
+
+                    m->Draw(model, view, projection);
+                }
+
+            } else {
+                m->Draw(model, view, projection);
+            }
+        }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

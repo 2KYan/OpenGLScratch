@@ -2,6 +2,7 @@
 #include<istream>
 #include<fstream>
 #include <string>
+#include <vector>
 
 #include "glad/glad.h"
 #define GLFW_DLL
@@ -49,6 +50,5 @@ protected:
     GLFWwindow* m_window;
 
     std::shared_ptr<Camera> m_camera;
-    std::shared_ptr<Model> m_model;
-    std::shared_ptr<Shader> m_Shader;
+    std::vector<std::shared_ptr<Model>> m_model;
 };

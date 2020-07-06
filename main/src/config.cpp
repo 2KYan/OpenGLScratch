@@ -75,11 +75,22 @@ rapidjson::Document::ValueType* Config::get_config(std::string key)
         if (obj->HasMember(k)) {
             obj = &(*obj)[k];
         } else {
+            obj = nullptr;
             spdlog::error("{0} doesn't exist in {1}", k, cur);
         }
     }
     return obj;
 
+}
+
+bool Config::get_bool(std::string key)
+{
+    auto v = get_config(key);
+    if (v) {
+        return v->GetBool();
+    } else {
+        return false;
+    }
 }
 
 int Config::get_int(std::string key)
@@ -106,7 +117,7 @@ std::vector<std::string> Config::get_object_names(std::string key)
     std::vector<std::string> result;
     auto v = get_config(key);
     if (v->IsObject()) {
-        for (const auto& o = v->MemberBegin(); o != v->MemberEnd(); ++v) {
+        for (auto o = v->MemberBegin(); o != v->MemberEnd(); o++) {
             result.push_back(std::string(o->name.GetString()));
         }
     }
