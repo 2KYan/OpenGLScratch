@@ -49,6 +49,9 @@ protected:
 
     GLFWwindow* m_window;
 
+    unsigned int m_frameBuffer;
+    unsigned int m_textureColorBuffer;
+
     std::shared_ptr<Camera> m_camera;
     std::vector<std::shared_ptr<Model>> m_model;
 };

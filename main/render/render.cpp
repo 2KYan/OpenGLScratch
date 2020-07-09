@@ -23,6 +23,8 @@
 
 #include "stb_image.h"
 
+#include "spdlog/spdlog.h"
+
 
 Render::Render()
 {
@@ -189,21 +191,43 @@ int Render::prepare()
 {
     auto config = RSLib::instance()->getConfig();
 
+    // load model
+    auto models = config->get_object_names("model");
+    for (auto& m : models) {
+        std::string path = "model/" + m;
+        m_model.emplace_back(std::make_shared<Model>(m, path));
+    }
+
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // load model
-    auto models = config->get_object_names("model");
-    for (auto& m : models) {
-        std::string path = "model/" + m;
-        bool enable = config->get_bool(path + "/enable");
-        if (enable) {
-            m_model.emplace_back(std::make_shared<Model>(m, path));
-        }
-    }
+
+    // Render to FBO
+    glGenFramebuffers(1, &m_frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+
+    glGenTextures(1, &m_textureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_scr_width, m_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureColorBuffer, 0);
+
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_scr_width, m_scr_height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        spdlog::error("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
     return 0;
 }
 
@@ -243,6 +267,8 @@ int Render::render()
 
         // render
         // ------
+        glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+        glEnable(GL_DEPTH_TEST);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -256,21 +282,31 @@ int Render::render()
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); // it's a bit too big for our scene, so scale it down
 
         for (auto& m : m_model) {
-            if (offset_table.find(m->name()) != offset_table.end()) {
-                std::map<float, glm::vec3> ordered;
-                for (auto& t : offset_table[m->name()]) {
-                    float distance = glm::length(m_camera->Position - t);
-                    ordered[distance] = t;
-                }
-                for (auto it = ordered.rbegin(); it != ordered.rend();it++) {
-                    model = glm::mat4(1.0f);
-                    model = glm::translate(model, it->second);
+            if (m->check("framebuffer")) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glDisable(GL_DEPTH_TEST);
+                glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+                glClear(GL_COLOR_BUFFER_BIT);
 
-                    m->Draw(model, view, projection);
-                }
-
+                glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
+                m->draw();
             } else {
-                m->Draw(model, view, projection);
+                if (offset_table.find(m->name()) != offset_table.end()) {
+                    std::map<float, glm::vec3> ordered;
+                    for (auto& t : offset_table[m->name()]) {
+                        float distance = glm::length(m_camera->Position - t);
+                        ordered[distance] = t;
+                    }
+                    for (auto it = ordered.rbegin(); it != ordered.rend();it++) {
+                        model = glm::mat4(1.0f);
+                        model = glm::translate(model, it->second);
+
+                        m->draw(model, view, projection);
+                    }
+
+                } else {
+                    m->draw(model, view, projection);
+                }
             }
         }
 

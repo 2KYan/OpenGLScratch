@@ -15,10 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{EDECB3A2-2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shader", "shader", "{6A82F1F4-99AB-4711-850D-4E91F216D98D}"
 	ProjectSection(SolutionItems) = preProject
+		data\shader\alpha_kill.frag = data\shader\alpha_kill.frag
 		data\shader\constant_color.frag = data\shader\constant_color.frag
 		data\shader\depth.frag = data\shader\depth.frag
 		data\shader\model_loading.frag = data\shader\model_loading.frag
 		data\shader\model_loading.vert = data\shader\model_loading.vert
+		data\shader\screen.frag = data\shader\screen.frag
+		data\shader\screen.vert = data\shader\screen.vert
 		data\shader\simple_light.frag = data\shader\simple_light.frag
 		data\shader\simple_transform.vert = data\shader\simple_transform.vert
 		data\shader\simple_triangle.frag = data\shader\simple_triangle.frag

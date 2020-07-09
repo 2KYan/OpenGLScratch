@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 class Config {
 public:
@@ -26,7 +27,9 @@ public:
     int get_int(std::string key);
     int get_uint(std::string key);
     std::string get_string(std::string key);
+
     std::vector<std::string> get_object_names(std::string key);
+    rapidjson::Document::ValueType* get_obj(std::string key);
 
 protected:
     void set_current(std::string app)
@@ -34,9 +37,6 @@ protected:
         m_app = app;
         m_current = m_config + "/" + m_app + "/";
     }
-
-
-    rapidjson::Document::ValueType* get_config(std::string key);
 
 protected:
     std::string m_cfg_name;
@@ -49,6 +49,7 @@ protected:
     rapidjson::Document m_doc;
     std::string m_config = "config";
     std::string m_current = "";
+
 };
 
 #endif //_CONFIG_Hy

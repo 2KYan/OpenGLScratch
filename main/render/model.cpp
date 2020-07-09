@@ -11,40 +11,71 @@ Model::Model(std::string model_name, std::string path, bool gamma)
     m_path = path;
 
     auto config = RSLib::instance()->getConfig();
+
+    for (auto on : config->get_object_names(path)) {
+        auto obj = config->get_obj(path + "/" + on);
+        if (obj->IsBool()) {
+            m_settings[on] = obj->GetBool();    
+        }
+    }
+
+    if (enable()) {
+        std::string model_resource = path + "/resource";
+        std::string shader_vs = path + "/shader/vs";
+        std::string shader_fs = path + "/shader/fs";
+
+        std::string model_path = RSLib::instance()->getModelFileName(config->get_string(model_resource).c_str());
+        printf("%s\n", model_path.c_str());
+        loadModel(model_path);
+
+        auto vs = config->get_string(shader_vs);
+        auto fs = config->get_string(shader_fs);
+        m_shader = std::make_shared<Shader>(vs.c_str(),fs.c_str());
+        
+        if (check("framebuffer")) {
+            m_shader->use();
+            m_shader->setInt("screenTexture", 0);
+        }
+    }
     
-    std::string model_resource = path + "/resource";
-    std::string shader_vs = path + "/shader/vs";
-    std::string shader_fs = path + "/shader/fs";
-
-    std::string model_path = RSLib::instance()->getModelFileName(config->get_string(model_resource).c_str());
-    printf("%s\n", model_path.c_str());
-    loadModel(model_path);
-
-    auto vs = config->get_string(shader_vs);
-    auto fs = config->get_string(shader_fs);
-    m_shader = std::make_shared<Shader>(vs.c_str(),fs.c_str());
 
     gammaCorrection = gamma;
 }
 
-void Model::Draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj)
+void Model::draw()
 {
-    m_shader->use();
+    if (enable()) {
+        m_shader->use();
 
-    m_shader->setMat4("projection", proj);
-    m_shader->setMat4("view", view);
-    m_shader->setMat4("model", model);
-
-    for (auto& mesh : m_meshes) {
-        mesh.Draw(m_shader);
+        for (auto& mesh : m_meshes) {
+            mesh.Draw(m_shader);
+        }
     }
+
+}
+
+void Model::draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj)
+{
+    if (enable()) {
+        m_shader->use();
+
+        m_shader->setMat4("projection", proj);
+        m_shader->setMat4("view", view);
+        m_shader->setMat4("model", model);
+
+        for (auto& mesh : m_meshes) {
+            mesh.Draw(m_shader);
+        }
+    }
+}
+
+bool Model::enable() {
+    return m_settings["disable"] == false;
 }
 
 bool Model::check(std::string attrib)
 {
-    auto config = RSLib::instance()->getConfig();
-
-    return config->get_bool(m_path + "/" + attrib);
+    return m_settings[attrib];
 }
 
 void Model::loadModel(std::string path)

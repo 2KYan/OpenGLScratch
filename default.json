@@ -1,6 +1,6 @@
 {
     "version" : 0.1,
-    "application": "advanced",
+    "application": "fb",
     "config": {
         "model_loading": {
             "screen_width": 1280,
@@ -15,12 +15,11 @@
                 }
             }
         },
-        "advanced": {
+        "ad": {
             "screen_width": 1280,
             "screen_height": 800,
             "model": {
                 "cube": {
-                    "enable" : true,
                     "resource": "common/cube.obj",
                     "shader" : {
                         "vs":  "model_loading.vert",
@@ -28,7 +27,6 @@
                     }
                 },
                 "plan": {
-                    "enable":  true,
                     "resource": "common/plan.obj",
                     "shader" : {
                         "vs":  "model_loading.vert",
@@ -36,11 +34,48 @@
                     }
                 },
                 "panel": {
-                    "enable":  true,
                     "resource": "common/panel.obj",
                     "shader" : {
                         "vs":  "model_loading.vert",
                         "fs":  "alpha_kill.frag"
+                    }
+                }
+            }
+        },
+        "fb": {
+            "screen_width": 1280,
+            "screen_height": 800,
+            "model": {
+                "cube": {
+                    "disable":  false,
+                    "resource": "common/cube.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "model_loading.frag"
+                    }
+                },
+                "plan": {
+                    "disable":  false,
+                    "resource": "common/plan.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "model_loading.frag"
+                    }
+                },
+                "panel": {
+                    "disable":  false,
+                    "resource": "common/panel.obj",
+                    "shader" : {
+                        "vs":  "model_loading.vert",
+                        "fs":  "alpha_kill.frag"
+                    }
+                },
+                "screen": {
+                    "framebuffer": true,
+                    "resource": "common/screen.obj",
+                    "shader" : {
+                        "vs":  "screen.vert",
+                        "fs":  "screen.frag"
                     }
                 }
             }

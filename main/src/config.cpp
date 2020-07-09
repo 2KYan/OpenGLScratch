@@ -59,7 +59,7 @@ Config::~Config()
     //m_doc.Clear();
 }
 
-rapidjson::Document::ValueType* Config::get_config(std::string key)
+rapidjson::Document::ValueType* Config::get_obj(std::string key)
 {
     using namespace rapidjson;
 
@@ -90,29 +90,40 @@ rapidjson::Document::ValueType* Config::get_config(std::string key)
 
 bool Config::get_bool(std::string key)
 {
-    auto v = get_config(key);
+    auto v = get_obj(key);
     if (v) {
         return v->GetBool();
     } else {
+        spdlog::warn("{0} doesn't exist, return false instead", key);
         return false;
     }
 }
 
 int Config::get_int(std::string key)
 {
-    auto v = get_config(key);
-    return v->GetUint();
+    auto v = get_obj(key);
+    if (v) {
+        return v->GetInt();
+    } else {
+        spdlog::warn("{0} doesn't exist, return 0 instead", key);
+        return 0;
+    }
 }
 
 int Config::get_uint(std::string key)
 {
-    auto v = get_config(key);
-    return v->GetUint();
+    auto v = get_obj(key);
+    if (v) {
+        return v->GetUint();
+    } else {
+        spdlog::warn("{0} doesn't exist, return 0 instead", key);
+        return 0;
+    }
 }
 
 std::string Config::get_string(std::string key) 
 {
-    auto v = get_config(key);
+    auto v = get_obj(key);
     return v->GetString();
 
 }
@@ -120,7 +131,7 @@ std::string Config::get_string(std::string key)
 std::vector<std::string> Config::get_object_names(std::string key) 
 {
     std::vector<std::string> result;
-    auto v = get_config(key);
+    auto v = get_obj(key);
     if (v->IsObject()) {
         for (auto o = v->MemberBegin(); o != v->MemberEnd(); o++) {
             result.push_back(std::string(o->name.GetString()));
