@@ -51,7 +51,9 @@ Render::~Render()
 }
 
 void Render::fb_resize_callback(GLFWwindow* window, int width, int height)
-    {
+{
+    m_scr_width = width;
+    m_scr_height = height;
     glViewport(0, 0, width, height);
 }
 
@@ -80,7 +82,7 @@ void Render::mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
     m_lastY = float(ypos);
 
     if (m_pressedMouseButton == 1) {
-        m_camera->Rotate(int(xpos), int(ypos), int(xoffset), int(yoffset), m_scr_width, m_scr_height); 
+        m_camera->Rotate(int(xpos), int(ypos), int(xoffset), int(yoffset), m_rt_width, m_rt_height); 
     } else {
         m_camera->ProcessMouseMovement(xoffset, yoffset);
     }
@@ -192,7 +194,7 @@ int Render::prepare()
     auto config = RSLib::instance()->getConfig();
 
     // load model
-    auto models = config->get_object_names("model");
+    auto models = config->get_object_keys("model");
     for (auto& m : models) {
         std::string path = "model/" + m;
         m_model.emplace_back(std::make_shared<Model>(m, path));
@@ -211,7 +213,7 @@ int Render::prepare()
 
     glGenTextures(1, &m_textureColorBuffer);
     glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_scr_width, m_scr_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_rt_width, m_rt_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureColorBuffer, 0);
@@ -219,7 +221,7 @@ int Render::prepare()
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_scr_width, m_scr_height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_rt_width, m_rt_height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 
@@ -268,6 +270,7 @@ int Render::render()
         // render
         // ------
         glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+        glViewport(0, 0, m_rt_width, m_rt_height);
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -283,11 +286,36 @@ int Render::render()
 
         for (auto& m : m_model) {
             if (m->check("framebuffer")) {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                glDisable(GL_DEPTH_TEST);
-                glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-                glClear(GL_COLOR_BUFFER_BIT);
+                continue;
+            } else {
+                if (offset_table.find(m->name()) != offset_table.end()) {
+                    std::map<float, glm::vec3> ordered;
+                    for (auto& t : offset_table[m->name()]) {
+                        float distance = glm::length(m_camera->Position - t);
+                        ordered[distance] = t;
+                    }
+                    for (auto it = ordered.rbegin(); it != ordered.rend();it++) {
+                        model = glm::mat4(1.0f);
+                        model = glm::translate(model, it->second);
 
+                        m->draw(model, view, projection);
+                    }
+
+                } else {
+                    model = glm::mat4(1.0f);
+                    m->draw(model, view, projection);
+                }
+            }
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, m_scr_width, m_scr_height);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        for (auto& m : m_model) {
+            if (m->check("framebuffer")) {
+                glDisable(GL_DEPTH_TEST);
                 glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
                 m->draw();
             } else {
@@ -305,11 +333,11 @@ int Render::render()
                     }
 
                 } else {
+                    model = glm::mat4(1.0f);
                     m->draw(model, view, projection);
                 }
             }
         }
-
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(m_window);

@@ -22,7 +22,7 @@ public:
     static RSLib* instance();
 
     std::shared_ptr<Config> getConfig();
-    struct args initConfig(int argc, char** argv);
+    std::shared_ptr<Config> initConfig(int argc, char** argv);
     std::string getConfigFileName(const char* fileName);
     std::string getModelFileName(const char* fileName);
     std::string getShaderFileName(const char* fileName);

@@ -5,19 +5,14 @@
 #include "texture.h"
 #include "shader.h"
 
-Model::Model(std::string model_name, std::string path, bool gamma)
+Model::Model(std::string model_name, std::string path)
 {
     m_objname = model_name;
     m_path = path;
 
     auto config = RSLib::instance()->getConfig();
 
-    for (auto on : config->get_object_names(path)) {
-        auto obj = config->get_obj(path + "/" + on);
-        if (obj->IsBool()) {
-            m_settings[on] = obj->GetBool();    
-        }
-    }
+    m_settings = config->get_object_settings(path);
 
     if (enable()) {
         std::string model_resource = path + "/resource";
@@ -25,7 +20,6 @@ Model::Model(std::string model_name, std::string path, bool gamma)
         std::string shader_fs = path + "/shader/fs";
 
         std::string model_path = RSLib::instance()->getModelFileName(config->get_string(model_resource).c_str());
-        printf("%s\n", model_path.c_str());
         loadModel(model_path);
 
         auto vs = config->get_string(shader_vs);
@@ -38,20 +32,6 @@ Model::Model(std::string model_name, std::string path, bool gamma)
         }
     }
     
-
-    gammaCorrection = gamma;
-}
-
-void Model::draw()
-{
-    if (enable()) {
-        m_shader->use();
-
-        for (auto& mesh : m_meshes) {
-            mesh.Draw(m_shader);
-        }
-    }
-
 }
 
 void Model::draw(glm::mat4 model, glm::mat4 view, glm::mat4 proj)

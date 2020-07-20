@@ -94,7 +94,7 @@ int RSLib::init()
     return 0;
 }
 
-RSLib::args RSLib::initConfig(int argc, char** argv)
+std::shared_ptr<Config> RSLib::initConfig(int argc, char** argv)
 {
     struct option long_options[] = {
         /* These options set a flag. */
@@ -148,9 +148,13 @@ RSLib::args RSLib::initConfig(int argc, char** argv)
     }
 
     auto cfg_name = getConfigFileName(m_arg.config.c_str());
-    m_config = std::make_shared<Config>(cfg_name);
+    try {
+        m_config = std::make_shared<Config>(cfg_name);
+    } catch (std::exception e) {
+        m_config = nullptr;
+    }
 
-    return m_arg;
+    return m_config;
 }
 
 std::shared_ptr<Config> RSLib::getConfig()

@@ -36,6 +36,9 @@ protected:
     int m_fps;
     unsigned m_scr_width = 1280;
     unsigned m_scr_height = 800;
+    
+    unsigned m_rt_width = 2560;
+    unsigned m_rt_height = 1600;
 
     float m_lastX = m_scr_width / 2.0f;
     float m_lastY = m_scr_height / 2.0f;

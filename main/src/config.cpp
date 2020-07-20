@@ -27,7 +27,7 @@ Config::Config(std::string name)
 
     if (m_doc.Parse(contents.str().c_str()).HasParseError()) {
         spdlog::error("Error in parsing {0}", m_cfg_name);
-        return;
+        throw std::exception();
     }
     
     
@@ -36,6 +36,7 @@ Config::Config(std::string name)
         set_app(m_app);
     } else {
         spdlog::error("Error in finding application in config file {0}.", m_cfg_name);
+        throw std::exception();
     }
 }
 
@@ -43,8 +44,17 @@ void Config::set_app(std::string app)
 {
     set_current(app);
 
-    m_width = get_uint("screen_width");
-    m_height = get_uint("screen_height");
+    auto sz = get_obj("window");
+    if (sz->IsArray()) {
+        m_width = ((*sz)[0]).GetInt();
+        m_height = (*sz)[1].GetInt();
+    }
+    sz = get_obj("rt");
+    if (sz->IsArray()) {
+        m_rt_width = ((*sz)[0]).GetInt();
+        m_rt_height = (*sz)[1].GetInt();
+    }
+
 
     spdlog::info("Reading {3} for {0} with screen {1}x{2}.", m_app, m_width, m_height, app);
 }
@@ -59,38 +69,42 @@ Config::~Config()
     //m_doc.Clear();
 }
 
-rapidjson::Document::ValueType* Config::get_obj(std::string key)
+rapidjson::Document::ValueType* Config::get_obj(std::string key, std::string prefix)
 {
     using namespace rapidjson;
 
-    Document::ValueType* obj = &m_doc;
-    if (obj->HasMember(key.c_str())) {
-        obj = &(*obj)[key.c_str()];
-        return obj;
-    }
+    auto find_obj = [this](std::string key) {
+        Document::ValueType* obj = &m_doc;
+        std::vector<std::string> r = split<std::vector<std::string>>(key, '/');
 
-    std::string f_key = m_current + key;
-    std::vector<std::string> r = split<std::vector<std::string>>(f_key, '/');
-
-    std::string cur;
-    for (auto& ak : r) {
-        cur = cur + "/" + ak;
-        auto k = ak.c_str();
-
-        if (obj->HasMember(k)) {
-            obj = &(*obj)[k];
-        } else {
-            obj = nullptr;
-            spdlog::error("{0} doesn't exist in {1}", k, cur);
+        for (auto& ak : r) {
+            if (ak == "") {
+                continue;
+            } else if (obj->HasMember(ak.c_str())) {
+                obj = &(*obj)[ak.c_str()];
+            } else {
+                obj = nullptr;
+                break;
+            }
         }
+        return obj;
+    };
+
+    //Always take global first priority
+    std::string f_key = (prefix == "") ? (m_app + "/" + key) : (prefix + "/" + key);
+
+    auto g_obj = find_obj(key);
+    auto obj = g_obj ? g_obj : find_obj(f_key);
+    if (obj == nullptr) {
+        spdlog::warn("{0} or {1} not exist in config", key, f_key);
     }
     return obj;
 
 }
 
-bool Config::get_bool(std::string key)
+bool Config::get_bool(std::string key, std::string prefix)
 {
-    auto v = get_obj(key);
+    auto v = get_obj(key, prefix);
     if (v) {
         return v->GetBool();
     } else {
@@ -99,9 +113,9 @@ bool Config::get_bool(std::string key)
     }
 }
 
-int Config::get_int(std::string key)
+int Config::get_int(std::string key, std::string prefix)
 {
-    auto v = get_obj(key);
+    auto v = get_obj(key, prefix);
     if (v) {
         return v->GetInt();
     } else {
@@ -110,9 +124,9 @@ int Config::get_int(std::string key)
     }
 }
 
-int Config::get_uint(std::string key)
+int Config::get_uint(std::string key, std::string prefix)
 {
-    auto v = get_obj(key);
+    auto v = get_obj(key, prefix);
     if (v) {
         return v->GetUint();
     } else {
@@ -121,20 +135,37 @@ int Config::get_uint(std::string key)
     }
 }
 
-std::string Config::get_string(std::string key) 
+std::string Config::get_string(std::string key, std::string prefix) 
 {
-    auto v = get_obj(key);
+    auto v = get_obj(key, prefix);
     return v->GetString();
 
 }
 
-std::vector<std::string> Config::get_object_names(std::string key) 
+std::vector<std::string> Config::get_object_keys(std::string key, std::string prefix) 
 {
     std::vector<std::string> result;
-    auto v = get_obj(key);
+    auto v = get_obj(key, prefix);
     if (v->IsObject()) {
         for (auto o = v->MemberBegin(); o != v->MemberEnd(); o++) {
             result.push_back(std::string(o->name.GetString()));
+        }
+    }
+    
+    return result;
+
+}
+
+std::unordered_map<std::string, bool> Config::get_object_settings(std::string key, std::string prefix)
+{
+    std::unordered_map<std::string, bool> result;
+    auto v = get_obj(key, prefix);
+    if (v->IsObject()) {
+        for (auto o = v->MemberBegin(); o != v->MemberEnd(); o++) {
+            if (o->value.IsBool()) {
+                result[o->name.GetString()] = o->value.GetBool();
+
+            }
         }
     }
     

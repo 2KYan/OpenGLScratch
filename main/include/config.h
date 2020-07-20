@@ -18,24 +18,29 @@ public:
     int width() { return m_width; }
     int height() { return m_height;  }
 
+    int rt_width() { return m_rt_width; }
+    int rt_height() { return m_rt_height;  }
+
     std::string get_app() { return m_app;  }
     void set_app(std::string app);
 
     bool check_model(std::string attrib);
 
-    bool get_bool(std::string key);
-    int get_int(std::string key);
-    int get_uint(std::string key);
-    std::string get_string(std::string key);
+    bool get_bool(std::string key, std::string prefix = "");
+    int get_int(std::string key, std::string prefix = "");
+    int get_uint(std::string key, std::string prefix = "");
+    std::string get_string(std::string key, std::string prefix = "");
 
-    std::vector<std::string> get_object_names(std::string key);
-    rapidjson::Document::ValueType* get_obj(std::string key);
 
-protected:
+    std::vector<std::string> get_object_keys(std::string key, std::string prefix = "");
+    std::unordered_map<std::string, bool> get_object_settings(std::string key, std::string prefix = "");
+
+protected :
+    rapidjson::Document::ValueType* get_obj(std::string key, std::string prefix = "");
+
     void set_current(std::string app)
     {
         m_app = app;
-        m_current = m_config + "/" + m_app + "/";
     }
 
 protected:
@@ -44,11 +49,11 @@ protected:
     unsigned m_width = 0;
     unsigned m_height = 0 ;
 
-    std::string m_app = "";
+    unsigned m_rt_width = 0;
+    unsigned m_rt_height = 0;
 
+    std::string m_app = "";
     rapidjson::Document m_doc;
-    std::string m_config = "config";
-    std::string m_current = "";
 
 };
 

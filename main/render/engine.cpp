@@ -4,11 +4,14 @@
 
 Engine::Engine(int argc, char** argv)
 {
-    RSLib::instance()->initConfig(argc, argv);
     m_bWindow = false;
 
+    auto config = RSLib::instance()->initConfig(argc, argv);
 
-    m_pRender = std::unique_ptr<Render>(new Render());
+    if (config) {
+        m_pRender = std::unique_ptr<Render>(new Render());
+    }
+
 }
 
 Engine::~Engine()
@@ -30,5 +33,9 @@ int Engine::closeWindow()
 
 int Engine::run()
 {
-    return m_pRender->run();
+    if (m_pRender) {
+        return m_pRender->run();
+    } else {
+        return -1;
+    }
 }

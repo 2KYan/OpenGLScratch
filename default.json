@@ -1,82 +1,123 @@
 {
     "version" : 0.1,
     "application": "fb",
-    "config": {
-        "model_loading": {
-            "screen_width": 1280,
-            "screen_height": 800,
-            "model": {
-                "backpack": {
-                    "resource": "backpack/backpack.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "depth.frag"
-                    }
+    "window": [ 1280, 800 ],
+    "rt": [2560, 1600],
+    "model_loading": {
+        "model": {
+            "backpack": {
+                "resource": "backpack/backpack.obj",
+                "shader" : {
+                    "vs":  "model_loading.vert",
+                    "fs":  "depth.frag"
+                }
+            }
+        }
+    },
+    "ad": {
+        "model": {
+            "cube": {
+                "resource": "common/cube.obj",
+                "shader" : {
+                    "vs":  "model_loading.vert",
+                    "fs":  "model_loading.frag"
+                }
+            },
+            "plan": {
+                "resource": "common/plan.obj",
+                "shader" : {
+                    "vs":  "model_loading.vert",
+                    "fs":  "model_loading.frag"
+                }
+            },
+            "panel": {
+                "resource": "common/panel.obj",
+                "shader" : {
+                    "vs":  "model_loading.vert",
+                    "fs":  "alpha_kill.frag"
+                }
+            }
+        }
+    },
+    "fb": {
+        "model": {
+            "cube": {
+                "disable": false,
+                "resource": "common/cube.obj",
+                "shader": {
+                    "vs": "model_loading.vert",
+                    "fs": "model_loading.frag"
+                }
+            },
+            "plan": {
+                "disable": false,
+                "resource": "common/plan.obj",
+                "shader": {
+                    "vs": "model_loading.vert",
+                    "fs": "model_loading.frag"
+                }
+            },
+            "panel": {
+                "disable": false,
+                "resource": "common/panel.obj",
+                "shader": {
+                    "vs": "model_loading.vert",
+                    "fs": "alpha_kill.frag"
+                }
+            },
+            "screen": {
+                "framebuffer": true,
+                "resource": "common/screen.obj",
+                "shader": {
+                    "vs": "screen.vert",
+                    "fs": "screen.frag"
+                }
+            }
+        }
+    },
+    "exp": {
+        "renderpass": [
+            "render2texture",
+            "blending",
+            "blt"
+        ],
+        "render2texture": {
+            "shader": {
+                "vs": "model_loading.vert",
+                "fs": "model_loading.frag"
+            },
+            "objectes": {
+                "cube": {
+                    "disable": false,
+                    "resource": "common/cube.obj"
+                },
+                "plan": {
+                    "disable": false,
+                    "resource": "common/plan.obj"
                 }
             }
         },
-        "ad": {
-            "screen_width": 1280,
-            "screen_height": 800,
-            "model": {
-                "cube": {
-                    "resource": "common/cube.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "model_loading.frag"
-                    }
-                },
-                "plan": {
-                    "resource": "common/plan.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "model_loading.frag"
-                    }
-                },
+        "blending": {
+            "shader": {
+                "vs": "model_loading.vert",
+                "fs": "alpha_kill.frag"
+            },
+            "objectes": {
                 "panel": {
-                    "resource": "common/panel.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "alpha_kill.frag"
-                    }
+                    "disable": false,
+                    "resource": "common/panel.obj"
                 }
             }
         },
-        "fb": {
-            "screen_width": 1280,
-            "screen_height": 800,
-            "model": {
-                "cube": {
-                    "disable":  false,
-                    "resource": "common/cube.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "model_loading.frag"
-                    }
-                },
-                "plan": {
-                    "disable":  false,
-                    "resource": "common/plan.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "model_loading.frag"
-                    }
-                },
-                "panel": {
-                    "disable":  false,
-                    "resource": "common/panel.obj",
-                    "shader" : {
-                        "vs":  "model_loading.vert",
-                        "fs":  "alpha_kill.frag"
-                    }
-                },
+        "blt": {
+            "shader": {
+                "vs": "screen.vert",
+                "fs": "screen.frag"
+            },
+            "objectes": {
                 "screen": {
                     "framebuffer": true,
-                    "resource": "common/screen.obj",
-                    "shader" : {
-                        "vs":  "screen.vert",
-                        "fs":  "screen.frag"
-                    }
+                    "resource": "common/screen.obj"
                 }
             }
         }
